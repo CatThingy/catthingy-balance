@@ -29,11 +29,9 @@ public class ProtectionNerfMixin {
         } else if (self.type == ProtectionEnchantment.Type.ALL
                 && !(source.is(DamageTypeTags.IS_PROJECTILE)
                     || source.is(DamageTypeTags.IS_EXPLOSION)
-                    || source.is(DamageTypeTags.IS_FALL)
                     || source.is(DamageTypeTags.IS_FIRE)
-                    || source.is(DamageTypeTags.IS_DROWNING)
-                    || source.is(DamageTypeTags.IS_FREEZING)
-                    || source.is(DamageTypeTags.IS_LIGHTNING))
+                    || source.is(DamageTypeTags.IS_LIGHTNING)
+                    || source.is(DamageTypeTags.BYPASSES_ARMOR))
         ) {
             return level * 2;
         } else {
