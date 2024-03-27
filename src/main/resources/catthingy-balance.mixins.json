@@ -16,7 +16,8 @@
     "MendingMixin",
     "ProtectionNerfMixin",
     "PunchMixin",
-    "RemoveArrowInvulnMixin"
+    "RemoveArrowInvulnMixin",
+    "SnowballKnockbackMixin"
   ],
   "injectors": {
     "defaultRequire": 1
