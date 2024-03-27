@@ -9,6 +9,7 @@
     "CrossbowBuffMixin",
     "CrossbowItemAccessor",
     "ElytraFireworkNerfMixin",
+    "FishingHookBuffMixin",
     "FlameMixin",
     "ItemCombinerMenuAccessor",
     "LivingEntityAccessor",
