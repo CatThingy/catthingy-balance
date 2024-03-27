@@ -3,8 +3,14 @@
   "package": "dev.catthingy.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "CrossbowBuffMixin",
+    "CrossbowItemAccessor",
     "ElytraFireworkNerfMixin",
-    "ProtectionNerfMixin"
+    "FlameMixin",
+    "LivingEntityAccessor",
+    "ProtectionNerfMixin",
+    "PunchMixin",
+    "RemoveArrowInvulnMixin"
   ],
   "injectors": {
     "defaultRequire": 1

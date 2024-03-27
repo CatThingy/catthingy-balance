@@ -6,7 +6,7 @@ import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-@Mixin(targets = "net.minecraft.world.item.enchantment.ProtectionEnchantment")
+@Mixin(ProtectionEnchantment.class)
 public class ProtectionNerfMixin {
 
     /**
