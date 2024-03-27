@@ -3,12 +3,16 @@
   "package": "dev.catthingy.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "AnvilMenuAccessor",
+    "AnvilReworkMixin",
     "BowPrecisionMixin",
     "CrossbowBuffMixin",
     "CrossbowItemAccessor",
     "ElytraFireworkNerfMixin",
     "FlameMixin",
+    "ItemCombinerMenuAccessor",
     "LivingEntityAccessor",
+    "MendingMixin",
     "ProtectionNerfMixin",
     "PunchMixin",
     "RemoveArrowInvulnMixin"
