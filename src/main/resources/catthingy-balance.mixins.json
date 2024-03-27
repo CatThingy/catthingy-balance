@@ -3,6 +3,7 @@
   "package": "dev.catthingy.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BowPrecisionMixin",
     "CrossbowBuffMixin",
     "CrossbowItemAccessor",
     "ElytraFireworkNerfMixin",
