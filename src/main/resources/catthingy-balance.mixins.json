@@ -11,6 +11,7 @@
     "ElytraFireworkNerfMixin",
     "FishingHookBuffMixin",
     "FlameMixin",
+    "InfinityMixin",
     "ItemCombinerMenuAccessor",
     "LivingEntityAccessor",
     "MendingMixin",
