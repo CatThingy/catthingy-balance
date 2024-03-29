@@ -15,7 +15,6 @@ import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -46,9 +45,6 @@ public class TridentCompatibilityMixin {
                         if (player.getAbilities().instabuild) {
                             thrownTrident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
-                        int impalingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.IMPALING, stack);
-
-                        thrownTrident.setBaseDamage(thrownTrident.getBaseDamage() + impalingLevel * 0.5 + (impalingLevel > 0 ? 0 : 0.5));
 
                         level.addFreshEntity(thrownTrident);
                         level.playSound(null, thrownTrident, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
