@@ -8,8 +8,7 @@
 		"CatThingy"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/CatThingy/catthingy-balance"
 	},
 	"license": "MIT",
 	"icon": "assets/catthingy-balance/icon.png",
