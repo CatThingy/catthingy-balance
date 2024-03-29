@@ -14,7 +14,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.FireAspectEnchantment;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(FireAspectEnchantment.class)
 public class FireAspectReworkMixin extends Enchantment {
@@ -64,8 +63,3 @@ public class FireAspectReworkMixin extends Enchantment {
     }
 }
 
-@Mixin(Entity.class)
-interface EntityAccessor {
-    @Invoker
-    boolean callGetSharedFlag(int flag);
-}

@@ -56,7 +56,7 @@ public abstract class AnvilReworkMixin {
                     }
 
                     int repairItem;
-                    for(repairItem = 0; repairAmount > 0 && repairItem < itemStack3.getCount(); ++repairItem) {
+                    for (repairItem = 0; repairAmount > 0 && repairItem < itemStack3.getCount(); ++repairItem) {
                         int n = itemStack2.getDamageValue() - repairAmount;
                         itemStack2.setDamageValue(n);
                         ++totalCost;
@@ -93,7 +93,7 @@ public abstract class AnvilReworkMixin {
                     boolean bl2 = false;
                     boolean bl3 = false;
 
-                    for(Enchantment enchantment : additionalEnchants.keySet()) {
+                    for (Enchantment enchantment : additionalEnchants.keySet()) {
                         if (enchantment != null) {
                             int q = finalEnchants.getOrDefault(enchantment, 0);
                             int r = additionalEnchants.get(enchantment);
@@ -103,7 +103,7 @@ public abstract class AnvilReworkMixin {
                                 canStackEnchant = true;
                             }
 
-                            for(Enchantment enchantment2 : finalEnchants.keySet()) {
+                            for (Enchantment enchantment2 : finalEnchants.keySet()) {
                                 if (enchantment2 != enchantment && !enchantment.isCompatibleWith(enchantment2)) {
                                     canStackEnchant = false;
                                     ++totalCost;
@@ -120,7 +120,7 @@ public abstract class AnvilReworkMixin {
                                 }
 
                                 finalEnchants.put(enchantment, r);
-                                int s = switch (enchantment.getRarity()) {
+                                int additionalEnchantmentCost = switch (enchantment.getRarity()) {
                                     case COMMON -> 1;
                                     case UNCOMMON -> 2;
                                     case RARE -> 4;
@@ -128,11 +128,11 @@ public abstract class AnvilReworkMixin {
                                 };
 
                                 if (isBook) {
-                                    s = Math.max(1, s / 2);
+                                    additionalEnchantmentCost = Math.max(1, additionalEnchantmentCost / 2);
                                 }
 
-                                totalCost += s * r;
-                                enchantCost += s * r;
+                                totalCost += additionalEnchantmentCost * r;
+                                enchantCost += additionalEnchantmentCost * r;
                                 if (itemStack.getCount() > 1) {
                                     totalCost = 40;
                                 }
@@ -161,15 +161,12 @@ public abstract class AnvilReworkMixin {
             }
 
             self.getCost().set(baseCost + totalCost);
-            if (totalCost <= 0) {
-                itemStack2 = ItemStack.EMPTY;
-            }
 
             if (renameCost == totalCost && renameCost > 0 && self.getCost().get() >= 40) {
                 self.getCost().set(39);
             }
 
-            if (self.getCost().get() >= 40 && !self_2.getPlayer().getAbilities().instabuild) {
+            if (enchantCost > 0 && self.getCost().get() >= 40 && !self_2.getPlayer().getAbilities().instabuild) {
                 itemStack2 = ItemStack.EMPTY;
             }
 
@@ -184,16 +181,21 @@ public abstract class AnvilReworkMixin {
                 }
 
                 if (enchantCost <= 0) {
+                    if (repairCost == 0) {
+                        itemStack2 = ItemStack.EMPTY;
+                    }
                     self.getCost().set(Math.max(1, (repairCost + renameCost) * (31 - Integer.numberOfLeadingZeros(t))));
                     t = itemStack2.getBaseRepairCost() + renameCost;
                 }
 
                 itemStack2.setRepairCost(t);
                 EnchantmentHelper.setEnchantments(finalEnchants, itemStack2);
+            } else if (itemStack3.isEmpty()) {
+                self.getCost().set(39);
             }
 
             self_2.getResultSlots().setItem(0, itemStack2);
-            ((AnvilMenu)((Object) this)).broadcastChanges();
+            ((AnvilMenu) ((Object) this)).broadcastChanges();
         }
     }
 }
@@ -209,6 +211,7 @@ interface ItemCombinerMenuAccessor {
     @Accessor
     ResultContainer getResultSlots();
 }
+
 @Mixin(AnvilMenu.class)
 interface AnvilMenuAccessor {
 

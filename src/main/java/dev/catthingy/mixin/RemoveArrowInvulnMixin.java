@@ -5,7 +5,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -21,8 +20,3 @@ public class RemoveArrowInvulnMixin {
     }
 }
 
-@Mixin(LivingEntity.class)
-interface LivingEntityAccessor {
-    @Invoker
-    void callActuallyHurt(DamageSource damageSource, float damageAmount);
-}

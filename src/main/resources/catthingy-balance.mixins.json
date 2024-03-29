@@ -19,6 +19,7 @@
     "LivingEntityAccessor",
     "MendingMixin",
     "MobMixin",
+    "NoPiercingPunchMixin",
     "PlayerMixin",
     "ProtectionNerfMixin",
     "PunchMixin",
