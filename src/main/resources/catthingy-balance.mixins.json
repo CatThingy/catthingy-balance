@@ -6,6 +6,7 @@
     "AnvilMenuAccessor",
     "AnvilReworkMixin",
     "BowPrecisionMixin",
+    "ChannelingMixin",
     "CrossbowBuffMixin",
     "CrossbowItemAccessor",
     "ElytraFireworkNerfMixin",
@@ -18,7 +19,9 @@
     "ProtectionNerfMixin",
     "PunchMixin",
     "RemoveArrowInvulnMixin",
-    "SnowballKnockbackMixin"
+    "RiptideCompatibilityMixin",
+    "SnowballKnockbackMixin",
+    "TridentCompatibilityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
