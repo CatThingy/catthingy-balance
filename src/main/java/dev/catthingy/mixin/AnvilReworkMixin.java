@@ -42,7 +42,7 @@ public abstract class AnvilReworkMixin {
         } else {
             ItemStack itemStack2 = itemStack.copy();
             ItemStack itemStack3 = self_2.getInputSlots().getItem(1);
-            Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(itemStack2);
+            Map<Enchantment, Integer> finalEnchants = EnchantmentHelper.getEnchantments(itemStack2);
             baseCost += itemStack.getBaseRepairCost() + (itemStack3.isEmpty() ? 0 : itemStack3.getBaseRepairCost());
             self.setRepairItemCountCost(0);
             if (!itemStack3.isEmpty()) {
@@ -89,29 +89,29 @@ public abstract class AnvilReworkMixin {
                         }
                     }
 
-                    Map<Enchantment, Integer> map2 = EnchantmentHelper.getEnchantments(itemStack3);
+                    Map<Enchantment, Integer> additionalEnchants = EnchantmentHelper.getEnchantments(itemStack3);
                     boolean bl2 = false;
                     boolean bl3 = false;
 
-                    for(Enchantment enchantment : map2.keySet()) {
+                    for(Enchantment enchantment : additionalEnchants.keySet()) {
                         if (enchantment != null) {
-                            int q = map.getOrDefault(enchantment, 0);
-                            int r = map2.get(enchantment);
+                            int q = finalEnchants.getOrDefault(enchantment, 0);
+                            int r = additionalEnchants.get(enchantment);
                             r = q == r ? r + 1 : Math.max(r, q);
-                            boolean bl4 = enchantment.canEnchant(itemStack);
+                            boolean canStackEnchant = enchantment.canEnchant(itemStack);
                             if (self_2.getPlayer().getAbilities().instabuild || itemStack.is(Items.ENCHANTED_BOOK)) {
-                                bl4 = true;
+                                canStackEnchant = true;
                             }
 
-                            for(Enchantment enchantment2 : map.keySet()) {
+                            for(Enchantment enchantment2 : finalEnchants.keySet()) {
                                 if (enchantment2 != enchantment && !enchantment.isCompatibleWith(enchantment2)) {
-                                    bl4 = false;
+                                    canStackEnchant = false;
                                     ++totalCost;
                                     ++enchantCost;
                                 }
                             }
 
-                            if (!bl4) {
+                            if (!canStackEnchant) {
                                 bl3 = true;
                             } else {
                                 bl2 = true;
@@ -119,7 +119,7 @@ public abstract class AnvilReworkMixin {
                                     r = enchantment.getMaxLevel();
                                 }
 
-                                map.put(enchantment, r);
+                                finalEnchants.put(enchantment, r);
                                 int s = switch (enchantment.getRarity()) {
                                     case COMMON -> 1;
                                     case UNCOMMON -> 2;
@@ -184,12 +184,12 @@ public abstract class AnvilReworkMixin {
                 }
 
                 if (enchantCost <= 0) {
-                    self.getCost().set((repairCost + renameCost) * (31 - Integer.numberOfLeadingZeros(t)));
+                    self.getCost().set(Math.max(1, (repairCost + renameCost) * (31 - Integer.numberOfLeadingZeros(t))));
                     t = itemStack2.getBaseRepairCost() + renameCost;
                 }
 
                 itemStack2.setRepairCost(t);
-                EnchantmentHelper.setEnchantments(map, itemStack2);
+                EnchantmentHelper.setEnchantments(finalEnchants, itemStack2);
             }
 
             self_2.getResultSlots().setItem(0, itemStack2);

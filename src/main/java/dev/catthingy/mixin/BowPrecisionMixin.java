@@ -16,9 +16,9 @@ public class BowPrecisionMixin {
     @Inject(method = "releaseUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"))
     void bowPrecision(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged, CallbackInfo ci, @Local AbstractArrow arrow, @Local float f) {
         int chargeTime = ((BowItem) ((Object) this)).getUseDuration(stack) - timeCharged;
-        arrow.setCritArrow(chargeTime >= 20 && chargeTime < 25);
-        if (chargeTime >= 20 && chargeTime < 22) {
-            arrow.setBaseDamage(arrow.getBaseDamage() * 1.5);
+        arrow.setCritArrow(chargeTime >= 20 && chargeTime < 22);
+        if (chargeTime >= 20 && chargeTime < 30) {
+            arrow.setBaseDamage(arrow.getBaseDamage() * 1.25);
         }
     }
 }
