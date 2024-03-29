@@ -12,6 +12,7 @@
     "ElytraFireworkNerfMixin",
     "EntityAccessor",
     "FireAspectReworkMixin",
+    "FireworkDamageReworkMixin",
     "FishingHookBuffMixin",
     "FlameMixin",
     "ImpalingThrownTridentMixin",
