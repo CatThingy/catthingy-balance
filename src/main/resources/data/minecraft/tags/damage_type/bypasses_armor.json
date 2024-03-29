@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "minecraft:arrow",
     "catthingy:smite",
     "catthingy:fire_aspect"
   ]

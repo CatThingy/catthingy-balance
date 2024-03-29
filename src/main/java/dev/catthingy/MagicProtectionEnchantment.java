@@ -33,7 +33,7 @@ public class MagicProtectionEnchantment extends Enchantment {
     }
 
     public int getDamageProtection(int level, DamageSource source) {
-        if (source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC) || source.is(DamageTypes.DRAGON_BREATH)) {
+        if (source.is(CustomDamageTypes.SMITE) || source.is(DamageTypes.MAGIC) || source.is(DamageTypes.INDIRECT_MAGIC) || source.is(DamageTypes.DRAGON_BREATH)) {
             return 2 * level;
         } else {
             return 0;

@@ -50,7 +50,7 @@ public class CrossbowBuffMixin {
      * @reason too dumb to figure out how to make it work
      */
     @Overwrite
-    static boolean loadProjectile(LivingEntity shooter, ItemStack crossbowStack, ItemStack ammoStack, boolean hasAmmo, boolean isCreative) {
+    private static boolean loadProjectile(LivingEntity shooter, ItemStack crossbowStack, ItemStack ammoStack, boolean hasAmmo, boolean isCreative) {
         if (ammoStack.isEmpty()) {
             return false;
         } else {
