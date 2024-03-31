@@ -63,7 +63,7 @@ public class FireworkDamageReworkMixin {
 
         if (hasDamage) {
             if (this.attachedToEntity != null) {
-                this.attachedToEntity.hurt(self.damageSources().fireworks(self, self.getOwner()), closeDamage);
+                this.attachedToEntity.hurt(self.damageSources().fireworks(self, self.getOwner()), closeDamage + mediumDamage + farDamage);
             }
 
             Vec3 vec3 = self.position();
