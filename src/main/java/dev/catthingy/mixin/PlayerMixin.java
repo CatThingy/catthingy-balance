@@ -19,7 +19,7 @@ public class PlayerMixin {
         ((Player) ((Object)this)).resetAttackStrengthTicker();
     }
 
-    @Redirect(method="attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSecondsOnFire(I)V"))
+    @Redirect(method="attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;igniteForSeconds(I)V"))
     void noFire (Entity instance, int seconds) {
         // This method intentionally left blank.
     }

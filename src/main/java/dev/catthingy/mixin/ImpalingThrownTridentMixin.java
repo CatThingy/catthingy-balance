@@ -1,11 +1,11 @@
 package dev.catthingy.mixin;
 
-import dev.catthingy.CatThingyBalance;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -21,16 +21,14 @@ public class ImpalingThrownTridentMixin {
         ItemStack item = self.getPickupItemStackOrigin();
         int impalingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.IMPALING, item);
 
-        CatThingyBalance.LOGGER.info("" + impalingLevel);
-
         if (impalingLevel > 0) {
             f += impalingLevel * 0.5F + 0.5F;
         }
         return f;
     }
 
-    @Redirect(method = "onHitEntity", at= @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getDamageBonus(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/MobType;)F"))
-    float noImpalingBonus (ItemStack stack, MobType creatureAttribute) {
-        return 0;
+    @Redirect(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getDamageBonus(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/entity/EntityType;)F"))
+    float noBonusDamage(ItemStack itemStack, @Nullable EntityType<?> entityType) {
+        return 0.0F;
     }
 }

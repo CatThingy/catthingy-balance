@@ -38,17 +38,17 @@ public class TridentCompatibilityMixin {
             if (chargeDuration >= 10) {
                 int riptideLevel = EnchantmentHelper.getRiptide(stack);
                 if (!level.isClientSide) {
-                    stack.hurtAndBreak(1, player, playerx -> playerx.broadcastBreakEvent(livingEntity.getUsedItemHand()));
+                    stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(livingEntity.getUsedItemHand()));
                     if (riptideLevel == 0 || (riptideLevel > 0 && !player.isInWaterOrRain())) {
                         ThrownTrident thrownTrident = new ThrownTrident(level, player, stack);
                         thrownTrident.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F + (float) riptideLevel * 0.5F, 1.0F);
-                        if (player.getAbilities().instabuild) {
+                        if (player.hasInfiniteMaterials()) {
                             thrownTrident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                         }
 
                         level.addFreshEntity(thrownTrident);
                         level.playSound(null, thrownTrident, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
-                        if (!player.getAbilities().instabuild) {
+                        if (!player.hasInfiniteMaterials()) {
                             player.getInventory().removeItem(stack);
                         }
                         return;

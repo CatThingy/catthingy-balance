@@ -2,25 +2,12 @@ package dev.catthingy;
 
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.ProtectionEnchantment;
 
 public class MagicProtectionEnchantment extends Enchantment {
-
-    public MagicProtectionEnchantment() {
-        super(Enchantment.Rarity.RARE, EnchantmentCategory.ARMOR, new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET});
-    }
-
-    @Override
-    public int getMinCost(int level) {
-        return 5 + (level - 1) * 7;
-    }
-
-    @Override
-    public int getMaxLevel() {
-        return 4;
+    public MagicProtectionEnchantment(EnchantmentDefinition enchantmentDefinition) {
+        super(enchantmentDefinition);
     }
 
     @Override

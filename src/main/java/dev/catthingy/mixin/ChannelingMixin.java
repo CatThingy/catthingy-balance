@@ -1,39 +1,18 @@
 package dev.catthingy.mixin;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
+import dev.catthingy.ChannelingEnchantment;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraft.world.item.enchantment.TridentChannelingEnchantment;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.enchantment.Enchantments;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(TridentChannelingEnchantment.class)
-public class ChannelingMixin extends Enchantment {
-
-    protected ChannelingMixin(Rarity rarity, EnchantmentCategory category, EquipmentSlot[] applicableSlots) {
-        super(rarity, category, applicableSlots);
-    }
-
-    @Override
-    public void doPostAttack(LivingEntity attacker, Entity target, int level) {
-        Level gameLevel = target.level();
-        if (attacker.isAutoSpinAttack() && gameLevel instanceof ServerLevel && gameLevel.isThundering()) {
-            BlockPos blockPos = attacker.blockPosition();
-            if (gameLevel.canSeeSky(blockPos)) {
-                LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(target.level());
-                if (lightningBolt != null) {
-                    lightningBolt.moveTo(Vec3.atBottomCenterOf(blockPos));
-                    lightningBolt.setCause(attacker instanceof ServerPlayer ? (ServerPlayer) attacker : null);
-                    gameLevel.addFreshEntity(lightningBolt);
-                    attacker.playSound(SoundEvents.TRIDENT_THUNDER, 5.0F, 1.0F);
-                }
-            }
-
-        }
+@Mixin(Enchantments.class)
+public class ChannelingMixin {
+    @Redirect(method = "<clinit>", at = @At(value = "NEW", target = "(Lnet/minecraft/world/item/enchantment/Enchantment$EnchantmentDefinition;)Lnet/minecraft/world/item/enchantment/Enchantment;", ordinal = 11))
+    private static Enchantment channelingEnchant(Enchantment.EnchantmentDefinition enchantmentDefinition) {
+        return new ChannelingEnchantment(Enchantment.definition(ItemTags.TRIDENT_ENCHANTABLE, 1, 1, Enchantment.constantCost(25), Enchantment.constantCost(50), 8, EquipmentSlot.MAINHAND));
     }
 }

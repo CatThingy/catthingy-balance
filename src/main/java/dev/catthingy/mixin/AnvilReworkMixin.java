@@ -1,25 +1,27 @@
 package dev.catthingy.mixin;
 
-import net.minecraft.Util;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Map;
-
-@Mixin(AnvilMenu.class)
+@Mixin(value = AnvilMenu.class, priority = 999)
 public abstract class AnvilReworkMixin {
     /**
      * @author me (:
@@ -29,24 +31,23 @@ public abstract class AnvilReworkMixin {
     public void createResult() {
         AnvilMenuAccessor self = (AnvilMenuAccessor) this;
         ItemCombinerMenuAccessor self_2 = (ItemCombinerMenuAccessor) this;
+
         ItemStack itemStack = self_2.getInputSlots().getItem(0);
         self.getCost().set(1);
-        int totalCost = 0;
-        int baseCost = 0;
-        int renameCost = 0;
-        int enchantCost = 0;
         int repairCost = 0;
-        if (itemStack.isEmpty()) {
-            self_2.getResultSlots().setItem(0, ItemStack.EMPTY);
-            self.getCost().set(0);
-        } else {
+        int enchantCost = 0;
+        int totalCost = 0;
+        long baseCost = 0L;
+        int renameCost = 0;
+        if (!itemStack.isEmpty() && EnchantmentHelper.canStoreEnchantments(itemStack)) {
             ItemStack itemStack2 = itemStack.copy();
             ItemStack itemStack3 = self_2.getInputSlots().getItem(1);
-            Map<Enchantment, Integer> finalEnchants = EnchantmentHelper.getEnchantments(itemStack2);
-            baseCost += itemStack.getBaseRepairCost() + (itemStack3.isEmpty() ? 0 : itemStack3.getBaseRepairCost());
+            ItemEnchantments.Mutable itemEnchants = new ItemEnchantments.Mutable(EnchantmentHelper.getEnchantmentsForCrafting(itemStack2));
+            baseCost += (long) itemStack.getOrDefault(DataComponents.REPAIR_COST, 0)
+                    + (long) itemStack3.getOrDefault(DataComponents.REPAIR_COST, 0);
             self.setRepairItemCountCost(0);
             if (!itemStack3.isEmpty()) {
-                boolean isBook = itemStack3.is(Items.ENCHANTED_BOOK) && !EnchantedBookItem.getEnchantments(itemStack3).isEmpty();
+                boolean storedEnchants = itemStack3.has(DataComponents.STORED_ENCHANTMENTS);
                 if (itemStack2.isDamageableItem() && itemStack2.getItem().isValidRepairItem(itemStack, itemStack3)) {
                     int repairAmount = Math.min(itemStack2.getDamageValue(), itemStack2.getMaxDamage() / 4);
                     if (repairAmount <= 0) {
@@ -59,83 +60,77 @@ public abstract class AnvilReworkMixin {
                     for (repairItem = 0; repairAmount > 0 && repairItem < itemStack3.getCount(); ++repairItem) {
                         int n = itemStack2.getDamageValue() - repairAmount;
                         itemStack2.setDamageValue(n);
-                        ++totalCost;
                         ++repairCost;
+                        ++totalCost;
                         repairAmount = Math.min(itemStack2.getDamageValue(), itemStack2.getMaxDamage() / 4);
                     }
 
                     self.setRepairItemCountCost(repairItem);
                 } else {
-                    if (!isBook && (!itemStack2.is(itemStack3.getItem()) || !itemStack2.isDamageableItem())) {
+                    if (!storedEnchants && (!itemStack2.is(itemStack3.getItem()) || !itemStack2.isDamageableItem())) {
                         self_2.getResultSlots().setItem(0, ItemStack.EMPTY);
                         self.getCost().set(0);
                         return;
                     }
 
-                    if (itemStack2.isDamageableItem() && !isBook) {
+                    if (itemStack2.isDamageableItem() && !storedEnchants) {
                         int itemDamage = itemStack.getMaxDamage() - itemStack.getDamageValue();
                         int item2Damage = itemStack3.getMaxDamage() - itemStack3.getDamageValue();
                         int repairAmount = item2Damage + itemStack2.getMaxDamage() * 12 / 100;
                         int totalRepair = itemDamage + repairAmount;
-                        int trueFinalDamage = itemStack2.getMaxDamage() - totalRepair;
-                        if (trueFinalDamage < 0) {
-                            trueFinalDamage = 0;
+                        int finalDamage = itemStack2.getMaxDamage() - totalRepair;
+                        if (finalDamage < 0) {
+                            finalDamage = 0;
                         }
 
-                        if (trueFinalDamage < itemStack2.getDamageValue()) {
-                            itemStack2.setDamageValue(trueFinalDamage);
-                            totalCost += 2;
+                        if (finalDamage < itemStack2.getDamageValue()) {
+                            itemStack2.setDamageValue(finalDamage);
                             repairCost += 2;
+                            totalCost += 2;
                         }
                     }
 
-                    Map<Enchantment, Integer> additionalEnchants = EnchantmentHelper.getEnchantments(itemStack3);
+                    ItemEnchantments additionalEnchants = EnchantmentHelper.getEnchantmentsForCrafting(itemStack3);
                     boolean bl2 = false;
                     boolean bl3 = false;
 
-                    for (Enchantment enchantment : additionalEnchants.keySet()) {
-                        if (enchantment != null) {
-                            int q = finalEnchants.getOrDefault(enchantment, 0);
-                            int r = additionalEnchants.get(enchantment);
-                            r = q == r ? r + 1 : Math.max(r, q);
-                            boolean canStackEnchant = enchantment.canEnchant(itemStack);
-                            if (self_2.getPlayer().getAbilities().instabuild || itemStack.is(Items.ENCHANTED_BOOK)) {
-                                canStackEnchant = true;
+                    for (Object2IntMap.Entry<Holder<Enchantment>> entry : additionalEnchants.entrySet()) {
+                        Holder<Enchantment> holder = entry.getKey();
+                        Enchantment enchantment = holder.value();
+                        int q = itemEnchants.getLevel(enchantment);
+                        int r = entry.getIntValue();
+                        r = q == r ? r + 1 : Math.max(r, q);
+                        boolean canStackEnchant = enchantment.canEnchant(itemStack);
+                        if (self_2.getPlayer().hasInfiniteMaterials() || itemStack.is(Items.ENCHANTED_BOOK)) {
+                            canStackEnchant = true;
+                        }
+
+                        for (Holder<Enchantment> holder2 : itemEnchants.keySet()) {
+                            if (!holder2.equals(holder) && !enchantment.isCompatibleWith(holder2.value())) {
+                                canStackEnchant = false;
+                                ++enchantCost;
+                                ++totalCost;
+                            }
+                        }
+
+                        if (!canStackEnchant) {
+                            bl3 = true;
+                        } else {
+                            bl2 = true;
+                            if (r > enchantment.getMaxLevel()) {
+                                r = enchantment.getMaxLevel();
                             }
 
-                            for (Enchantment enchantment2 : finalEnchants.keySet()) {
-                                if (enchantment2 != enchantment && !enchantment.isCompatibleWith(enchantment2)) {
-                                    canStackEnchant = false;
-                                    ++totalCost;
-                                    ++enchantCost;
-                                }
+                            itemEnchants.set(enchantment, r);
+                            int additionalEnchantmentCost = enchantment.getAnvilCost();
+                            if (storedEnchants) {
+                                additionalEnchantmentCost = Math.max(1, additionalEnchantmentCost / 2);
                             }
 
-                            if (!canStackEnchant) {
-                                bl3 = true;
-                            } else {
-                                bl2 = true;
-                                if (r > enchantment.getMaxLevel()) {
-                                    r = enchantment.getMaxLevel();
-                                }
-
-                                finalEnchants.put(enchantment, r);
-                                int additionalEnchantmentCost = switch (enchantment.getRarity()) {
-                                    case COMMON -> 1;
-                                    case UNCOMMON -> 2;
-                                    case RARE -> 4;
-                                    case VERY_RARE -> 8;
-                                };
-
-                                if (isBook) {
-                                    additionalEnchantmentCost = Math.max(1, additionalEnchantmentCost / 2);
-                                }
-
-                                totalCost += additionalEnchantmentCost * r;
-                                enchantCost += additionalEnchantmentCost * r;
-                                if (itemStack.getCount() > 1) {
-                                    totalCost = 40;
-                                }
+                            totalCost += additionalEnchantmentCost * r;
+                            enchantCost += additionalEnchantmentCost * r;
+                            if (itemStack.getCount() > 1) {
+                                totalCost = 40;
                             }
                         }
                     }
@@ -148,36 +143,40 @@ public abstract class AnvilReworkMixin {
                 }
             }
 
-            if (self.getItemName() != null && !Util.isBlank(self.getItemName())) {
+            if (self.getItemName() != null && !StringUtil.isBlank(self.getItemName())) {
                 if (!self.getItemName().equals(itemStack.getHoverName().getString())) {
                     renameCost = 1;
                     totalCost += renameCost;
-                    itemStack2.setHoverName(Component.literal(self.getItemName()));
+                    itemStack2.set(DataComponents.CUSTOM_NAME, Component.literal(self.getItemName()));
                 }
-            } else if (itemStack.hasCustomHoverName()) {
+            } else if (itemStack.has(DataComponents.CUSTOM_NAME)) {
                 renameCost = 1;
                 totalCost += renameCost;
-                itemStack2.resetHoverName();
+                itemStack2.remove(DataComponents.CUSTOM_NAME);
             }
 
-            self.getCost().set(baseCost + totalCost);
+            int t = (int) Mth.clamp(baseCost + (long) totalCost, 0L, 2147483647L);
+            self.getCost().set(t);
+            if (totalCost <= 0) {
+                itemStack2 = ItemStack.EMPTY;
+            }
 
             if (renameCost == totalCost && renameCost > 0 && self.getCost().get() >= 40) {
                 self.getCost().set(39);
             }
 
-            if (enchantCost > 0 && self.getCost().get() >= 40 && !self_2.getPlayer().getAbilities().instabuild) {
+            if (self.getCost().get() >= 40 && !self_2.getPlayer().hasInfiniteMaterials()) {
                 itemStack2 = ItemStack.EMPTY;
             }
 
             if (!itemStack2.isEmpty()) {
-                int t = itemStack2.getBaseRepairCost();
-                if (!itemStack3.isEmpty() && t < itemStack3.getBaseRepairCost()) {
-                    t = itemStack3.getBaseRepairCost();
+                int k = itemStack2.getOrDefault(DataComponents.REPAIR_COST, 0);
+                if (k < itemStack3.getOrDefault(DataComponents.REPAIR_COST, 0)) {
+                    k = itemStack3.getOrDefault(DataComponents.REPAIR_COST, 0);
                 }
 
                 if (renameCost != totalCost || renameCost == 0) {
-                    t = AnvilMenu.calculateIncreasedRepairCost(t);
+                    k = (int) Math.min((long) k * 2L + 1L, 2147483647L);
                 }
 
                 if (enchantCost <= 0) {
@@ -185,42 +184,44 @@ public abstract class AnvilReworkMixin {
                         itemStack2 = ItemStack.EMPTY;
                     }
                     self.getCost().set(Math.max(1, (repairCost + renameCost) * (31 - Integer.numberOfLeadingZeros(t))));
-                    t = itemStack2.getBaseRepairCost() + renameCost;
+                    k = itemStack2.getOrDefault(DataComponents.REPAIR_COST, 0) + renameCost;
                 }
 
-                itemStack2.setRepairCost(t);
-                EnchantmentHelper.setEnchantments(finalEnchants, itemStack2);
-            } else if (itemStack3.isEmpty()) {
-                self.getCost().set(39);
+                itemStack2.set(DataComponents.REPAIR_COST, k);
+                EnchantmentHelper.setEnchantments(itemStack2, itemEnchants.toImmutable());
             }
 
             self_2.getResultSlots().setItem(0, itemStack2);
-            ((AnvilMenu) ((Object) this)).broadcastChanges();
+            ((AnvilMenu) ((Object) (this))).broadcastChanges();
+        } else {
+            self_2.getResultSlots().setItem(0, ItemStack.EMPTY);
+            self.getCost().set(0);
         }
+
     }
-}
 
-@Mixin(ItemCombinerMenu.class)
-interface ItemCombinerMenuAccessor {
-    @Accessor
-    Player getPlayer();
+    @Mixin(ItemCombinerMenu.class)
+    interface ItemCombinerMenuAccessor {
+        @Accessor
+        Player getPlayer();
 
-    @Accessor
-    Container getInputSlots();
+        @Accessor
+        Container getInputSlots();
 
-    @Accessor
-    ResultContainer getResultSlots();
-}
+        @Accessor
+        ResultContainer getResultSlots();
+    }
 
-@Mixin(AnvilMenu.class)
-interface AnvilMenuAccessor {
+    @Mixin(AnvilMenu.class)
+    interface AnvilMenuAccessor {
 
-    @Accessor
-    void setRepairItemCountCost(int repairItemCountCost);
+        @Accessor
+        void setRepairItemCountCost(int repairItemCountCost);
 
-    @Accessor
-    String getItemName();
+        @Accessor
+        String getItemName();
 
-    @Accessor
-    DataSlot getCost();
+        @Accessor
+        DataSlot getCost();
+    }
 }

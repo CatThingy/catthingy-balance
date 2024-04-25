@@ -1,13 +1,12 @@
 package dev.catthingy.mixin;
 
-import dev.catthingy.CatThingyBalance;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -16,6 +15,8 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+
+import java.util.List;
 
 @Mixin(FireworkRocketEntity.class)
 public class FireworkDamageReworkMixin {
@@ -37,23 +38,19 @@ public class FireworkDamageReworkMixin {
         float closeDamage = 2.0F;
         float mediumDamage = 2.0F;
         float farDamage = 1.0F;
-        ItemStack itemStack = ((EntityAccessor) self).getEntityData().get(DATA_ID_FIREWORKS_ITEM);
-        CompoundTag compoundTag = itemStack.isEmpty() ? null : itemStack.getTagElement("Fireworks");
-        ListTag listTag = compoundTag != null ? compoundTag.getList("Explosions", 10) : null;
-        if (listTag != null && !listTag.isEmpty()) {
-            for (Tag value : listTag) {
-                CompoundTag tag = (CompoundTag) value;
-                switch (tag.getByte("Type")) {
-                    case 1:
-                        CatThingyBalance.LOGGER.info("LARGE");
+        ItemStack itemStack = self.getEntityData().get(DATA_ID_FIREWORKS_ITEM);
+        Fireworks fireworks = itemStack.get(DataComponents.FIREWORKS);
+        List<FireworkExplosion> explosions = fireworks != null ? fireworks.explosions() : List.of();
+        if (explosions != null && !explosions.isEmpty()) {
+            for (FireworkExplosion explosion : explosions) {
+                switch (explosion.shape()) {
+                    case LARGE_BALL:
                         farDamage += 2.0F;
                         break;
-                    case 2:
-                        CatThingyBalance.LOGGER.info("STAR");
+                    case STAR:
                         closeDamage += 3.0F;
                         break;
                     default:
-                        CatThingyBalance.LOGGER.info("DEFAULT");
                         mediumDamage += 2.0F;
                 }
 

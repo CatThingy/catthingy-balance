@@ -1,100 +1,48 @@
 package dev.catthingy.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ArrowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.gen.Invoker;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(CrossbowItem.class)
-public class CrossbowBuffMixin {
-    @Inject(method = "getArrow", at = @At("TAIL"))
-    private static void getArrow(Level level, LivingEntity livingEntity, ItemStack crossbowStack, ItemStack ammoStack, CallbackInfoReturnable<AbstractArrow> cir, @Local AbstractArrow abstractArrow) {
-        int punchLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.PUNCH_ARROWS, crossbowStack);
-        if (punchLevel > 0) {
-            abstractArrow.setKnockback(punchLevel);
-        }
-        int flameLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FLAMING_ARROWS, crossbowStack);
-        if (flameLevel > 0) {
-            abstractArrow.setSecondsOnFire(100);
-        }
-        int infinityLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, crossbowStack);
-        if (infinityLevel > 0 && ammoStack.is(Items.ARROW)) {
-            abstractArrow.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
-        }
+public abstract class CrossbowBuffMixin extends ProjectileWeaponItem {
+
+    public CrossbowBuffMixin(Properties properties) {
+        super(properties);
     }
 
-    @Redirect(method = "performShooting", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CrossbowItem;shootProjectile(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;FZFFF)V", ordinal = 1))
-    private static void shootMultishot1(Level level, LivingEntity shooter, InteractionHand hand, ItemStack crossbowStack, ItemStack ammoStack, float soundPitch, boolean isCreativeMode, float velocity, float inaccuracy, float projectileAngle, @Local float[] pitches, @Local boolean bl) {
-        CrossbowItemAccessor.callShootProjectile(level, shooter, hand, crossbowStack, ammoStack, pitches[1], bl, velocity, inaccuracy * 7.5F, 0.01F);
-    }
-
-    @Redirect(method = "performShooting", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/CrossbowItem;shootProjectile(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;FZFFF)V", ordinal = 2))
-    private static void shootMultishot2(Level level, LivingEntity shooter, InteractionHand hand, ItemStack crossbowStack, ItemStack ammoStack, float soundPitch, boolean isCreativeMode, float velocity, float inaccuracy, float projectileAngle, @Local float[] pitches, @Local boolean bl) {
-        CrossbowItemAccessor.callShootProjectile(level, shooter, hand, crossbowStack, ammoStack, pitches[1], bl, velocity, inaccuracy * 7.5F, -0.01F);
-    }
-
-    @Inject(method = "shootProjectile", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/item/CrossbowItem;getArrow(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/entity/projectile/AbstractArrow;", shift = At.Shift.AFTER))
-    private static void lessMultishotPunch(Level level, LivingEntity shooter, InteractionHand hand, ItemStack crossbowStack, ItemStack ammoStack, float soundPitch, boolean isCreativeMode, float velocity, float inaccuracy, float projectileAngle, CallbackInfo ci, @Local Projectile projectile) {
-        if (projectileAngle != 0.0F){
-            AbstractArrow arrow = (AbstractArrow) projectile;
-            arrow.setKnockback(arrow.getKnockback() / 2);
-        }
-    }
-
-    /**
-     * @author me (:
-     * @reason too dumb to figure out how to make it work
-     */
-    @Overwrite
-    private static boolean loadProjectile(LivingEntity shooter, ItemStack crossbowStack, ItemStack ammoStack, boolean hasAmmo, boolean isCreative) {
-        if (ammoStack.isEmpty()) {
-            return false;
-        } else {
-            int infinityLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, crossbowStack);
-            boolean bl = isCreative && ammoStack.getItem() instanceof ArrowItem;
-            ItemStack itemStack;
-            if (!bl && !isCreative && !hasAmmo && !(infinityLevel > 0 && ammoStack.is(Items.ARROW))) {
-                itemStack = ammoStack.split(1);
-                if (ammoStack.isEmpty() && shooter instanceof Player) {
-                    ((Player) shooter).getInventory().removeItem(ammoStack);
+    @Override
+    protected void shoot(
+            Level level,
+            LivingEntity livingEntity,
+            InteractionHand interactionHand,
+            ItemStack itemStack,
+            List<ItemStack> list,
+            float velocity,
+            float inaccuracy,
+            boolean crit,
+            @Nullable LivingEntity livingEntity2
+    ) {
+        for (int l = 0; l < list.size(); ++l) {
+            ItemStack itemStack2 = list.get(l);
+            if (!itemStack2.isEmpty()) {
+                itemStack.hurtAndBreak(this.getDurabilityUse(itemStack2), livingEntity, LivingEntity.getSlotForHand(interactionHand));
+                Projectile projectile = this.createProjectile(level, livingEntity, itemStack, itemStack2, crit);
+                this.shootProjectile(livingEntity, projectile, l, velocity, inaccuracy + (l == 0.0F ? 0.0F : 7.5F), 0, livingEntity2);
+                level.addFreshEntity(projectile);
+                if (l != 0 && projectile instanceof AbstractArrow arrow) {
+                    arrow.setKnockback(arrow.getKnockback() / 2);
                 }
-            } else {
-                itemStack = ammoStack.copy();
             }
-
-            CrossbowItemAccessor.callAddChargedProjectile(crossbowStack, itemStack);
-            return true;
         }
     }
 }
-
-@Mixin(CrossbowItem.class)
-interface CrossbowItemAccessor {
-    @Invoker
-    static void callShootProjectile(Level level, LivingEntity shooter, InteractionHand hand, ItemStack crossbowStack, ItemStack ammoStack, float soundPitch, boolean isCreativeMode, float velocity, float inaccuracy, float projectileAngle) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Invoker
-    static void callAddChargedProjectile(ItemStack crossbowStack, ItemStack ammoStack) {
-        throw new UnsupportedOperationException();
-    }
-}
-
