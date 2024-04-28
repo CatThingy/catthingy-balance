@@ -18,14 +18,14 @@ public class FireAspectEnchantment extends Enchantment {
         float multiplier = 1.0f;
         if (attacker instanceof Player player) {
             multiplier = player.getAttackStrengthScale(0.5F);
+            multiplier *= multiplier;
             if (multiplier < 0.5) {
                 multiplier = 0;
             }
-            multiplier *= multiplier;
         }
 
         if (target.wasOnFire) {
-            target.hurt(CustomDamageTypes.of(target.level(), CustomDamageTypes.FIRE_ASPECT), multiplier * (0.3F + (float) Math.max(0, level - 1) * 0.2F));
+            target.hurt(CustomDamageTypes.of(target.level(), CustomDamageTypes.FIRE_ASPECT, attacker, attacker), multiplier * (0.3F + (float) Math.max(0, level - 1) * 0.2F));
             if (target.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.FLAME,
                         target.getX(),

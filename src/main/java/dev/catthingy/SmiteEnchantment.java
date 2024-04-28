@@ -27,8 +27,11 @@ public class SmiteEnchantment extends DamageEnchantment {
         if (attacker instanceof Player player) {
             multiplier = player.getAttackStrengthScale(0.5F);
             multiplier *= multiplier;
+            if (multiplier < 0.5) {
+                multiplier = 0;
+            }
         }
-        target.hurt(CustomDamageTypes.of(target.level(), CustomDamageTypes.SMITE), multiplier * (0.3F + (float) Math.max(0, level - 1) * 0.15F));
+        target.hurt(CustomDamageTypes.of(target.level(), CustomDamageTypes.SMITE, attacker, attacker), multiplier * (0.3F + (float) Math.max(0, level - 1) * 0.15F));
         if (target.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.SCRAPE,
                     target.getX(),

@@ -7,7 +7,6 @@
     "AnvilReworkMixin$AnvilMenuAccessor",
     "AnvilReworkMixin$ItemCombinerMenuAccessor",
     "BowPrecisionMixin",
-    "BowPrecisionMixin$ProjectileWeaponItemAccessor",
     "ChannelingMixin",
     "CrossbowBuffMixin",
     "ElytraFireworkNerfMixin",

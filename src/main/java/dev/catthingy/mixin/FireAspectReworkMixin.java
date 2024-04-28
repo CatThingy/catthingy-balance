@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(Enchantments.class)
 public class FireAspectReworkMixin {
-    @Redirect(method = "<clinit>", at = @At(value = "NEW", target = "(Lnet/minecraft/world/item/enchantment/Enchantment$EnchantmentDefinition;)Lnet/minecraft/world/item/enchantment/Enchantment;", ordinal=3))
+    @Redirect(method = "<clinit>", at = @At(value = "NEW", target = "(Lnet/minecraft/world/item/enchantment/Enchantment$EnchantmentDefinition;)Lnet/minecraft/world/item/enchantment/Enchantment;", ordinal = 3))
     private static Enchantment fireAspectEnchant(Enchantment.EnchantmentDefinition enchantmentDefinition) {
-        return new FireAspectEnchantment(Enchantment.definition(ItemTags.FIRE_ASPECT_ENCHANTABLE, 2, 5, Enchantment.dynamicCost(10, 20), Enchantment.dynamicCost(60, 20), 4, EquipmentSlot.MAINHAND));
+        return new FireAspectEnchantment(Enchantment.definition(ItemTags.FIRE_ASPECT_ENCHANTABLE, 5, 5, Enchantment.dynamicCost(5, 8), Enchantment.dynamicCost(25, 8), 2, EquipmentSlot.MAINHAND));
     }
 }

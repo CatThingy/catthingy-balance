@@ -180,7 +180,7 @@ public abstract class AnvilReworkMixin {
                 }
 
                 if (enchantCost <= 0) {
-                    if (repairCost == 0) {
+                    if (repairCost == 0 && renameCost == 0) {
                         itemStack2 = ItemStack.EMPTY;
                     }
                     self.getCost().set(Math.max(1, (repairCost + renameCost) * (31 - Integer.numberOfLeadingZeros(t))));
