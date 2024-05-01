@@ -28,6 +28,8 @@
     "RiptideCompatibilityMixin",
     "SmiteReworkMixin",
     "SnowballKnockbackMixin",
+    "ThornsLevelAdjustmentMixin",
+    "ThornsReworkMixin",
     "TridentCompatibilityMixin"
   ],
   "injectors": {

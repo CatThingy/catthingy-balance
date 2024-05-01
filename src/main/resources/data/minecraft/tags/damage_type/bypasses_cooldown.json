@@ -3,6 +3,7 @@
   "values": [
     "minecraft:arrow",
     "catthingy:smite",
-    "catthingy:fire_aspect"
+    "catthingy:fire_aspect",
+    "minecraft:thorns"
   ]
 }
