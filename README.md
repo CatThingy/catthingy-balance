@@ -12,7 +12,9 @@ decisions.
       - Punch + Multishot crossbows' extra arrows apply less knockback
 - Bows enhanced:
     - Arrows are only get full damage when releasing an arrow within 0.5s after being fully charged
+       - This is a 20% damage nerf vs. previous crit arrows
     - Crit arrows are only achieved by releasing an arrow within .1s after being fully charged
+       - This is a 25% damabe buff vs previous crit arrows 
 - Protection enchantment reworked:
     - Protection only applies to damage sources not covered by the other protection enchantments
     - Protection does not apply to things that ignore armour
@@ -20,6 +22,9 @@ decisions.
 - Magic Protection enchantment added:
     - Same as the protection enchantments, just only applicable to damage sources considered magic
 - Anvil item repairs are much cheaper (xp-wise) and do not cause anvil prices to increase.
+    - Netherite tools/armour are now repaired with diamonds instead of netherite ingots
+    - Netherite toosl/armour can be repaired with diamond tools/armour
+    - Tridents can now be repaired with prismarine crystals or shards
 - Mending obliterated
     - Villagers do not trade Mending
     - Fishing for treasure is only able to produce mending on fishing rods
@@ -37,6 +42,11 @@ decisions.
     - Fire Aspect duration reduced from 4s per level to 1s per level
     - Fire Aspect is now incompatible with Sharpness/Smite/Bane of Arthropods
 - Firework damage is now based on the firework star
-  - Large ball fireworks deal damage in a larger radius
-  - Star fireworks deal more damage in a smaller radius
-  - Other fireworks remain unchanged
+    - Large ball fireworks deal damage in a larger radius
+    - Star fireworks deal more damage in a smaller radius
+    - Other fireworks remain unchanged
+- Thorns reworked
+    - Only one level of thorns exists
+    - Thorns is no longer random
+    - Thorns does not deal knockback
+    - Thorns does not drain durability
