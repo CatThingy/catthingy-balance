@@ -20,6 +20,7 @@
     "LivingEntityAccessor",
     "MendingMixin",
     "MobMixin",
+    "NetheriteRepairMixin",
     "NoPiercingPunchMixin",
     "PlayerMixin",
     "ProtectionNerfMixin",
@@ -30,7 +31,8 @@
     "SnowballKnockbackMixin",
     "ThornsLevelAdjustmentMixin",
     "ThornsReworkMixin",
-    "TridentCompatibilityMixin"
+    "TridentCompatibilityMixin",
+    "TridentRepairMixin"
   ],
   "injectors": {
     "defaultRequire": 1

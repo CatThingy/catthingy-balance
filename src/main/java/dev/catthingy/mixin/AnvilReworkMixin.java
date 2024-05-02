@@ -12,8 +12,8 @@ import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.ItemCombinerMenu;
 import net.minecraft.world.inventory.ResultContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -67,7 +67,21 @@ public abstract class AnvilReworkMixin {
 
                     self.setRepairItemCountCost(repairItem);
                 } else {
-                    if (!storedEnchants && (!itemStack2.is(itemStack3.getItem()) || !itemStack2.isDamageableItem())) {
+                    boolean canRepair = itemStack2.is(itemStack3.getItem());
+                    if (itemStack2.getItem() instanceof TieredItem tier1 && itemStack3.getItem() instanceof TieredItem tier2
+                            && tier1.getTier().equals(Tiers.NETHERITE) && tier2.getTier().getRepairIngredient().equals(Ingredient.of(Items.DIAMOND))) {
+                        canRepair |= (tier1 instanceof HoeItem && tier2 instanceof HoeItem)
+                                || (tier1 instanceof AxeItem && tier2 instanceof AxeItem)
+                                || (tier1 instanceof ShovelItem && tier2 instanceof ShovelItem)
+                                || (tier1 instanceof SwordItem && tier2 instanceof SwordItem)
+                                || (tier1 instanceof PickaxeItem && tier2 instanceof PickaxeItem);
+                    }
+                    if (itemStack2.getItem() instanceof ArmorItem armor1 && itemStack3.getItem() instanceof ArmorItem armor2
+                            && armor1.getMaterial().equals(ArmorMaterials.NETHERITE) && armor2.getMaterial().equals(ArmorMaterials.DIAMOND)) {
+                        canRepair |= armor1.getEquipmentSlot().equals(armor2.getEquipmentSlot());
+                    }
+
+                    if (!storedEnchants && (!canRepair || !itemStack2.isDamageableItem())) {
                         self_2.getResultSlots().setItem(0, ItemStack.EMPTY);
                         self.getCost().set(0);
                         return;
