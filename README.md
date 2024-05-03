@@ -50,3 +50,7 @@ decisions.
     - Thorns is no longer random
     - Thorns does not deal knockback
     - Thorns does not drain durability
+- Improve enchanted loot
+    - Enchantment quality improved for bastions, outposts, underwater ruins, and woodland mansions
+    - Nether fortress chests can contain an enchanted book
+    - Treasure enchantments (Frost Walker, Mending) occur significantly more often

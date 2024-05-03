@@ -5,8 +5,8 @@ import net.minecraft.world.item.enchantment.MendingEnchantment;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(MendingEnchantment.class)
-public class MendingMixin extends Enchantment {
-    public MendingMixin(EnchantmentDefinition enchantmentDefinition) {
+public class NoTradeMendingMixin extends Enchantment {
+    public NoTradeMendingMixin(EnchantmentDefinition enchantmentDefinition) {
         super(enchantmentDefinition);
     }
 
