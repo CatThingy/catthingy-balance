@@ -33,7 +33,8 @@
     "ThornsLevelAdjustmentMixin",
     "ThornsReworkMixin",
     "TridentCompatibilityMixin",
-    "TridentRepairMixin"
+    "TridentRepairMixin",
+    "TrueInfinityMixin"
   ],
   "injectors": {
     "defaultRequire": 1
