@@ -14,7 +14,8 @@ decisions.
     - Arrows are only get full damage when releasing an arrow within 0.5s after being fully charged
        - This is a 20% damage nerf vs. previous crit arrows
     - Crit arrows are only achieved by releasing an arrow within .1s after being fully charged
-       - This is a 25% damabe buff vs previous crit arrows 
+       - This is a 25% damage buff vs previous crit arrows
+- Infinity no longer requires arrows in the inventory
 - Protection enchantment reworked:
     - Protection only applies to damage sources not covered by the other protection enchantments
     - Protection does not apply to things that ignore armour
