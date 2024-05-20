@@ -15,12 +15,7 @@ public class ElytraFireworkNerfMixin {
         double d = 0.5;
         double e = 0.1;
         Vec3 vel = target.getDeltaMovement();
-        target
-                .setDeltaMovement(
-                        vel.add(
-                                lookDir.x * e + (lookDir.x * d - vel.x) * 0.5, lookDir.y * e + (lookDir.y * d - vel.y) * 0.5, lookDir.z * e + (lookDir.z * d - vel.z) * 0.5
-                        )
-                );
+        target.setDeltaMovement(vel.add(lookDir.x * e + (lookDir.x * d - vel.x) * 0.5, lookDir.y * e + (lookDir.y * d - vel.y) * 0.5, lookDir.z * e + (lookDir.z * d - vel.z) * 0.5));
     }
 }
 

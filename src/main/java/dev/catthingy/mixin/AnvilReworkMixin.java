@@ -179,7 +179,7 @@ public abstract class AnvilReworkMixin {
                 self.getCost().set(39);
             }
 
-            if (self.getCost().get() >= 40 && !self_2.getPlayer().hasInfiniteMaterials()) {
+            if (enchantCost > 0 && self.getCost().get() >= 40 && !self_2.getPlayer().hasInfiniteMaterials()) {
                 itemStack2 = ItemStack.EMPTY;
             }
 
