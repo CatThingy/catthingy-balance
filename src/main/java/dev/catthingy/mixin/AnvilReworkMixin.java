@@ -49,7 +49,7 @@ public abstract class AnvilReworkMixin {
             if (!itemStack3.isEmpty()) {
                 boolean storedEnchants = itemStack3.has(DataComponents.STORED_ENCHANTMENTS);
                 if (itemStack2.isDamageableItem() && itemStack2.getItem().isValidRepairItem(itemStack, itemStack3)) {
-                    int repairAmount = Math.min(itemStack2.getDamageValue(), itemStack2.getMaxDamage() / 4);
+                    int repairAmount = Math.min(itemStack2.getDamageValue(), itemStack2.getMaxDamage() / 3);
                     if (repairAmount <= 0) {
                         self_2.getResultSlots().setItem(0, ItemStack.EMPTY);
                         self.getCost().set(0);
@@ -111,7 +111,7 @@ public abstract class AnvilReworkMixin {
                     for (Object2IntMap.Entry<Holder<Enchantment>> entry : additionalEnchants.entrySet()) {
                         Holder<Enchantment> holder = entry.getKey();
                         Enchantment enchantment = holder.value();
-                        int q = itemEnchants.getLevel(enchantment);
+                        int q = itemEnchants.getLevel(holder);
                         int r = entry.getIntValue();
                         r = q == r ? r + 1 : Math.max(r, q);
                         boolean canStackEnchant = enchantment.canEnchant(itemStack);
@@ -120,7 +120,7 @@ public abstract class AnvilReworkMixin {
                         }
 
                         for (Holder<Enchantment> holder2 : itemEnchants.keySet()) {
-                            if (!holder2.equals(holder) && !enchantment.isCompatibleWith(holder2.value())) {
+                            if (!holder2.equals(holder) && !Enchantment.areCompatible(holder, holder2)) {
                                 canStackEnchant = false;
                                 ++enchantCost;
                                 ++totalCost;
@@ -135,7 +135,7 @@ public abstract class AnvilReworkMixin {
                                 r = enchantment.getMaxLevel();
                             }
 
-                            itemEnchants.set(enchantment, r);
+                            itemEnchants.set(holder, r);
                             int additionalEnchantmentCost = enchantment.getAnvilCost();
                             if (storedEnchants) {
                                 additionalEnchantmentCost = Math.max(1, additionalEnchantmentCost / 2);

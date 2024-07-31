@@ -2,6 +2,6 @@
   "enchantment.catthingy.magic_protection": "Magic Protection",
   "death.attack.smite": "%s was smited by %s",
   "death.attack.smite.item": "%s was smited by %s using %s",
-  "death.attack.fire_aspect": "%s was immolated by %s",
-  "death.attack.fire_aspect.item": "%s was immolated by %s using %s"
+  "death.attack.immolate": "%s was immolated by %s",
+  "death.attack.immolate.item": "%s was immolated by %s using %s"
 }
