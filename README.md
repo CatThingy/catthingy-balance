@@ -22,10 +22,11 @@ decisions.
     - Same as the protection enchantments, just only applicable to damage sources considered magic
 - Anvil item repairs are much cheaper (xp-wise) and do not cause anvil prices to increase.
     - Netherite tools/armour are now repaired with diamonds instead of netherite ingots
-    - Netherite toosl/armour can be repaired with diamond tools/armour
+    - Netherite tools/armour can be repaired with diamond tools/armour
     - Tridents can now be repaired with prismarine crystals or shards
 - Mending is no longer obtainable in Survival
 - Anvil unit repair restores 33.3% of durability instead of 25%.
+- Durability globally increased by 50%.
 - Fishing rods do not take increased durability damage from hooking in entities
 - Snowballs knock back players
 - Smite and Fire Aspect reworked
@@ -43,3 +44,4 @@ decisions.
     - Thorns is no longer random
     - Thorns does not deal knockback
     - Thorns does not drain durability
+- Heavy Core, Creator disc have a higher drop rate

@@ -1,7 +1,7 @@
 {
   "anvil_cost": 1,
   "description": {
-    "translate": "enchantment.minecraft.protection"
+    "translate": "enchantment.catthingy.magic_protection"
   },
   "effects": {
     "minecraft:damage_protection": [
@@ -40,7 +40,7 @@
   "max_level": 4,
   "min_cost": {
     "base": 4,
-    "per_level_above_first": 11
+    "per_level_above_first": 6
   },
   "slots": [
     "armor"

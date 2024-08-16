@@ -8,6 +8,7 @@
     "AnvilReworkMixin$AnvilMenuAccessor",
     "AnvilReworkMixin$ItemCombinerMenuAccessor",
     "BowPrecisionMixin",
+    "DurabilityMixin",
     "ElytraFireworkNerfMixin",
     "EntityAccessor",
     "FireworkDamageReworkMixin",
